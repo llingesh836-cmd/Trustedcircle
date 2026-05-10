@@ -6,6 +6,9 @@ import { CartProvider } from '@/context/CartContext';
 export const metadata: Metadata = {
   title: 'Trusted Circle',
   description: 'Discounted branded gift vouchers with payment and order flow.',
+  icons: {
+    icon: '/assets/brand/logo.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

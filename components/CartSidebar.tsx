@@ -18,9 +18,10 @@ export default function CartSidebar() {
     }
 
     const userData = JSON.parse(user);
+    const createdOrders = [];
     try {
       for (const item of items) {
-        await fetch('/api/orders/create', {
+        const response = await fetch('/api/orders/create', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -32,9 +33,18 @@ export default function CartSidebar() {
             userEmail: userData.email,
           }),
         });
+        const data = await response.json();
+        if (response.ok) {
+          createdOrders.push(data.order);
+        } else {
+          alert(`Failed to create order for ${item.voucherName}: ${data.error}`);
+          return;
+        }
       }
       clearCart();
-      alert('Order placed successfully!');
+      if (createdOrders.length > 0) {
+        window.location.href = `/processing?orderId=${createdOrders[0].id}`;
+      }
     } catch (error) {
       alert('Failed to place order');
     }

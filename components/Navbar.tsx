@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import CartSidebar from './CartSidebar';
@@ -38,7 +39,13 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-gradient-to-r from-white to-slate-50 backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-600" />
+          <Image
+            src="/assets/brand/logo.png"
+            alt="Trusted Circle"
+            width={32}
+            height={32}
+            className="rounded-lg"
+          />
           <span className="text-lg font-bold bg-gradient-to-r from-brand-600 to-brand-500 bg-clip-text text-transparent">
             Trusted Circle
           </span>

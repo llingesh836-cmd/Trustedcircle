@@ -39,7 +39,7 @@ export const vouchers: Voucher[] = [
     brand: 'Amazon',
     discount: 5,
     description: 'Shop everything on Amazon with instant savings.',
-    image: '/placeholder-amazon.png',
+    image: '/assets/vouchers/amazon.png',
     codes: {
       100: ['AMAZON100-XYZ123', 'AMAZON100-XYZ456', 'AMAZON100-XYZ789'],
       500: ['AMAZON500-ABC456', 'AMAZON500-ABC789'],
@@ -51,7 +51,7 @@ export const vouchers: Voucher[] = [
     brand: 'Flipkart',
     discount: 6,
     description: 'Discounted Flipkart vouchers for popular categories.',
-    image: '/placeholder-flipkart.png',
+    image: '/assets/vouchers/flipkart.png',
     codes: {
       100: ['FLIP100-XYZ123', 'FLIP100-XYZ456'],
       500: ['FLIP500-ABC456', 'FLIP500-ABC789'],
@@ -63,7 +63,7 @@ export const vouchers: Voucher[] = [
     brand: 'Myntra',
     discount: 7,
     description: 'Fashion gift vouchers for your favourite brands.',
-    image: '/placeholder-myntra.png',
+    image: '/assets/vouchers/myntra.png',
     codes: {
       100: ['MYNTRA100-XYZ123', 'MYNTRA100-XYZ456'],
       500: ['MYNTRA500-ABC456'],
@@ -75,7 +75,7 @@ export const vouchers: Voucher[] = [
     brand: 'BookMyShow',
     discount: 4,
     description: 'Movie and event vouchers with instant value.',
-    image: '/placeholder-bms.png',
+    image: '/assets/vouchers/bookmyshow.png',
     codes: {
       100: ['BMS100-XYZ123', 'BMS100-XYZ456'],
       500: ['BMS500-ABC456'],
@@ -87,7 +87,7 @@ export const vouchers: Voucher[] = [
     brand: 'KFC',
     discount: 3,
     description: 'Treat yourself with crispy KFC vouchers.',
-    image: '/placeholder-kfc.png',
+    image: '/assets/vouchers/kfc.png',
     codes: {
       100: ['KFC100-XYZ123'],
       500: ['KFC500-ABC456'],
@@ -99,7 +99,7 @@ export const vouchers: Voucher[] = [
     brand: 'Domino’s',
     discount: 2,
     description: 'Pizza vouchers for your next party night.',
-    image: '/placeholder-dominos.png',
+    image: '/assets/vouchers/dominos.png',
     codes: {
       100: ['DOM100-XYZ123'],
       500: ['DOM500-ABC456'],
