@@ -20,14 +20,17 @@ Open `http://localhost:3000` in your browser.
 
 ## AWS Amplify deployment
 
-Add the `amplify.yml` file at the repository root and configure Amplify to use the default branch.
-Amplify should run the following commands:
+**Important:** If you're getting 404 errors, Amplify may not be detecting Next.js correctly.
 
-```bash
-npm ci
-npm run build
-```
+### Recommended Fix:
+1. **Delete** your current Amplify app
+2. **Create a new Amplify app** and select **Next.js** as the framework
+3. Connect to your GitHub repo
+4. Amplify will auto-configure the build settings
 
-The artifact directory should be set to `.next`.
+### Manual Configuration (if recreating doesn't work):
+In Amplify Console > App settings > Build settings:
+- Build commands: `npm ci` then `npm run build`
+- Build output directory: `.next`
 
-If the site still returns `404`, ensure Amplify is configured for Next.js SSR hosting and not plain static hosting.
+The `amplify.yml` in the repo should handle this automatically, but framework selection is crucial.
