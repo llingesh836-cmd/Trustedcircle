@@ -17,3 +17,17 @@ npm run dev
 ```
 
 Open `http://localhost:3000` in your browser.
+
+## AWS Amplify deployment
+
+Add the `amplify.yml` file at the repository root and configure Amplify to use the default branch.
+Amplify should run the following commands:
+
+```bash
+npm ci
+npm run build
+```
+
+The artifact directory should be set to `.next`.
+
+If the site still returns `404`, ensure Amplify is configured for Next.js SSR hosting and not plain static hosting.
