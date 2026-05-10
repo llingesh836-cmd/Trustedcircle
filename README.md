@@ -11,12 +11,22 @@ Trusted Circle is a Next.js full-stack MVP for selling discounted branded gift v
 
 ## Run locally
 
+Copy the example environment file and add your Razorpay test keys locally:
+
+```bash
+cp .env.example .env
+```
+
+Then install and run:
+
 ```bash
 npm install
 npm run dev
 ```
 
 Open `http://localhost:3000` in your browser.
+
+> Note: `.env` is ignored by Git, so your Razorpay secret stays local.
 
 ## AWS Amplify deployment
 
