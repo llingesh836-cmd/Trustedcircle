@@ -13,6 +13,8 @@ export type User = {
   phone: string;
   name: string;
   email: string;
+  password: string;
+  emailConfirmed: boolean;
 };
 
 export type OrderStatus = 'created' | 'paid' | 'completed';
@@ -112,11 +114,67 @@ export const otpStore: Record<string, string> = {};
 
 const makeId = () => Math.random().toString(36).substring(2, 10).toUpperCase();
 
+const otpKeyForPhone = (phone: string) => `otp-phone:${phone}`;
+const otpKeyForEmail = (email: string) => `otp-email:${email.toLowerCase()}`;
+
 export const getVoucherById = (id: string) => vouchers.find((voucher) => voucher.id === id);
 
 export const getOrdersForPhone = (phone: string) => orders.filter((order) => order.userPhone === phone);
 
 export const getOrderById = (id: string) => orders.find((order) => order.id === id);
+
+export const findUserByEmail = (email: string) => users.find((user) => user.email.toLowerCase() === email.toLowerCase());
+export const findUserByPhone = (phone: string) => users.find((user) => user.phone === phone);
+
+export const authenticateUser = (email: string, password: string) => {
+  const user = findUserByEmail(email);
+  if (!user) return null;
+  return user.password === password ? user : null;
+};
+
+export const createUser = ({ phone, name, email, password = '', emailConfirmed = false }: {phone: string; name: string; email: string; password?: string; emailConfirmed?: boolean;}) => {
+  const existingByEmail = findUserByEmail(email);
+  const existingByPhone = findUserByPhone(phone);
+
+  if (existingByEmail || existingByPhone) {
+    const existing = existingByEmail || existingByPhone;
+    if (existing?.email.toLowerCase() === email.toLowerCase() && existing?.phone === phone) {
+      existing.name = name;
+      existing.password = password;
+      existing.emailConfirmed = emailConfirmed || existing.emailConfirmed;
+      return existing;
+    }
+    return null;
+  }
+
+  const user: User = {
+    phone,
+    name,
+    email,
+    password,
+    emailConfirmed,
+  };
+
+  users.push(user);
+  return user;
+};
+
+export const storeOtpForContact = (phone: string, email: string, otp: string) => {
+  otpStore[otpKeyForPhone(phone)] = otp;
+  otpStore[otpKeyForEmail(email)] = otp;
+};
+
+export const getStoredOtpForContact = (phone: string, email: string) => {
+  return {
+    phoneOtp: otpStore[otpKeyForPhone(phone)],
+    emailOtp: otpStore[otpKeyForEmail(email)],
+  };
+};
+
+export const verifyOtpForContact = (phone: string, email: string, otp: string) => {
+  const { phoneOtp, emailOtp } = getStoredOtpForContact(phone, email);
+  return phoneOtp === otp && emailOtp === otp;
+};
 
 export const createOrder = ({
   voucherId,
@@ -184,17 +242,4 @@ export const verifyPaymentForOrder = (orderId: string): Order | { error: string 
   order.status = 'completed';
   order.voucherCode = assigned;
   return order;
-};
-
-export const createUser = ({ phone, name, email }: User) => {
-  const existing = users.find((user) => user.phone === phone);
-  if (existing) {
-    existing.name = name;
-    existing.email = email;
-    return existing;
-  }
-
-  const user = { phone, name, email };
-  users.push(user);
-  return user;
 };

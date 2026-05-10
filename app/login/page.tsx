@@ -1,130 +1,87 @@
 'use client';
 
-import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'details' | 'verify'>('details');
+  const [password, setPassword] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const sendOtp = async () => {
-    if (!phone) {
-      setMessage('Please enter your phone number.');
+  const handleLogin = async () => {
+    setMessage(null);
+    if (!email || !password) {
+      setMessage('Please enter both email and password.');
       return;
     }
-    const response = await fetch('/api/auth/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone }),
-    });
-    const data = await response.json();
-    if (response.ok) {
-      setStep('verify');
-      setMessage('OTP sent. Use 123456 to verify in this mock flow.');
-    } else {
-      setMessage(data.error ?? 'Unable to send OTP.');
-    }
-  };
 
-  const verifyOtp = async () => {
-    if (!otp) {
-      setMessage('Please enter the OTP.');
-      return;
-    }
-    const response = await fetch('/api/auth/verify-otp', {
+    setLoading(true);
+    const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, otp, name, email }),
+      body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
+    setLoading(false);
+
     if (response.ok) {
-      localStorage.setItem('trustedcircle-user', JSON.stringify(data.user));
+      localStorage.setItem('trustedcircle-user', JSON.stringify({ name: data.user.name, email: data.user.email, phone: data.user.phone }));
       router.push('/profile');
     } else {
-      setMessage(data.error ?? 'OTP verification failed.');
+      setMessage(data.error ?? 'Login failed.');
     }
   };
 
   return (
     <div className="min-h-[80vh] px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-8 shadow-card">
-        <h1 className="text-3xl font-semibold text-slate-900">Login or Register</h1>
-        <p className="mt-3 text-slate-600">Enter your details and authenticate using a mock OTP.</p>
+        <h1 className="text-3xl font-semibold text-slate-900">Login to Trusted Circle</h1>
+        <p className="mt-3 text-slate-600">Use your registered email and password to access your profile and vouchers.</p>
 
         <div className="mt-8 grid gap-6">
-          <label className="space-y-2">
-            <span className="text-sm font-medium text-slate-700">Name</span>
-            <input
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
-              placeholder="Your full name"
-            />
-          </label>
-
           <label className="space-y-2">
             <span className="text-sm font-medium text-slate-700">Email</span>
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
               placeholder="you@example.com"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
             />
           </label>
 
           <label className="space-y-2">
-            <span className="text-sm font-medium text-slate-700">Phone Number</span>
+            <span className="text-sm font-medium text-slate-700">Password</span>
             <input
-              type="tel"
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Your password"
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
-              placeholder="+91 98765 43210"
             />
           </label>
 
-          {step === 'verify' ? (
-            <label className="space-y-2">
-              <span className="text-sm font-medium text-slate-700">OTP Code</span>
-              <input
-                type="text"
-                value={otp}
-                onChange={(event) => setOtp(event.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
-                placeholder="123456"
-              />
-            </label>
-          ) : null}
-
           {message ? <p className="text-sm text-rose-600">{message}</p> : null}
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            {step === 'details' ? (
-              <button
-                type="button"
-                onClick={sendOtp}
-                className="inline-flex items-center justify-center rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600"
-              >
-                Send OTP
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={verifyOtp}
-                className="inline-flex items-center justify-center rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600"
-              >
-                Verify OTP
-              </button>
-            )}
-            <p className="text-sm text-slate-500">Mock OTP for this demo: <strong>123456</strong></p>
-          </div>
+          <button
+            type="button"
+            onClick={handleLogin}
+            disabled={loading}
+            className="inline-flex w-full items-center justify-center rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-slate-300"
+          >
+            {loading ? 'Signing in…' : 'Login'}
+          </button>
+
+          <p className="text-sm text-slate-600">
+            New to Trusted Circle?{' '}
+            <Link href="/register" className="font-semibold text-brand-600 hover:text-brand-700">
+              Register now
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>

@@ -4,14 +4,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const navItems = [
-  { href: '/', label: 'Home' },
-  { href: '/profile', label: 'Profile' },
-  { href: '/login', label: 'Login' },
-];
-
 export default function Navbar() {
-  const [user, setUser] = useState<{ name: string; phone: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string; phone: string } | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -24,8 +18,20 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('trustedcircle-user');
+    setUser(null);
     router.push('/login');
   };
+
+  const navItems = user
+    ? [
+        { href: '/', label: 'Home' },
+        { href: '/profile', label: 'Profile' },
+      ]
+    : [
+        { href: '/', label: 'Home' },
+        { href: '/login', label: 'Login' },
+        { href: '/register', label: 'Register' },
+      ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
@@ -34,7 +40,7 @@ export default function Navbar() {
           Trusted Circle
         </Link>
 
-        <nav className="flex items-center gap-4 text-sm font-medium text-slate-700">
+        <nav className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-700">
           {navItems.map((item) => (
             <Link
               href={item.href}
