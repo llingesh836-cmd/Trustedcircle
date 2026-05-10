@@ -1,18 +1,32 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: ['./app/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  content: ['./app/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}', './context/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['system-ui', 'sans-serif'],
+      },
       boxShadow: {
         card: '0 15px 45px rgba(15, 23, 42, 0.08)',
+        sm: '0 1px 3px rgba(0,0,0,0.08)',
       },
       colors: {
         brand: {
-          50: '#eef2ff',
-          500: '#4f46e5',
-          600: '#4338ca',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
         },
+      },
+      backgroundImage: {
+        gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       },
     },
   },

@@ -28,61 +28,85 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="bg-page px-4 py-8 sm:px-6 lg:px-8">
-      <section className="mx-auto max-w-6xl py-10">
-        <div className="grid gap-6 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-card lg:grid-cols-[1.5fr_1fr] lg:items-center">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-brand-600">Trusted Circle</p>
-            <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-              Secure vouchers with fast account access.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
-              Browse the best voucher brands, manage orders, and keep your account safe with phone and email OTP verification.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/login" className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600">
-                Login
-              </Link>
-              <Link href="/register" className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-300">
-                Register
-              </Link>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-brand-500 via-brand-400 to-blue-400 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+            <div>
+              <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl">
+                Best Deals on Gift Vouchers
+              </h1>
+              <p className="mt-4 text-lg text-white/90">
+                Shop your favorite brands with instant delivery
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                {user ? (
+                  <button className="rounded-lg bg-white px-6 py-3 font-semibold text-brand-600 transition hover:bg-slate-100">
+                    Start Shopping
+                  </button>
+                ) : (
+                  <>
+                    <Link
+                      href="/register"
+                      className="rounded-lg bg-white px-6 py-3 font-semibold text-brand-600 transition hover:bg-slate-100"
+                    >
+                      Get Started
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="rounded-lg border-2 border-white bg-transparent px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+                    >
+                      Login
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-
-          <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-8 shadow-sm">
-            {user ? (
-              <div className="space-y-4">
-                <p className="text-sm font-medium text-brand-600">Welcome back</p>
-                <h2 className="text-2xl font-semibold text-slate-900">Hello, {user.name}</h2>
-                <p className="text-slate-600">Your account is ready to shop vouchers and track orders instantly.</p>
+            <div className="hidden lg:block">
+              <div className="relative h-64 w-full rounded-2xl bg-gradient-to-br from-white/20 to-transparent backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                <svg className="h-32 w-32 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
               </div>
-            ) : (
-              <div className="space-y-4">
-                <p className="text-sm font-medium text-brand-600">New here?</p>
-                <h2 className="text-2xl font-semibold text-slate-900">Create an account in minutes</h2>
-                <p className="text-slate-600">Register with email, phone, and password, then verify via OTP to get started.</p>
-              </div>
-            )}
+            </div>
           </div>
         </div>
+      </section>
 
-        <SectionHeader
-          title="Discounted branded gift vouchers"
-          description="Choose your favourite voucher, complete a fast checkout, and receive a ready-to-use voucher code instantly."
-        />
-
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+      {/* Featured Vouchers */}
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
           {loading ? (
-            <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-10 text-center text-slate-600 shadow-card">
-              Loading vouchers...
+            <div className="text-center py-12">
+              <div className="inline-block h-12 w-12 animate-spin rounded-full border-b-2 border-brand-500"></div>
+              <p className="mt-4 text-slate-600">Loading vouchers...</p>
             </div>
           ) : vouchers.length === 0 ? (
-            <div className="col-span-full rounded-3xl border border-slate-200 bg-white p-10 text-center text-slate-600 shadow-card">
-              No vouchers available yet.
+            <div className="text-center py-12 text-slate-600">
+              <p>No vouchers available yet</p>
             </div>
           ) : (
-            vouchers.map((voucher) => <VoucherCard key={voucher.id} voucher={voucher} />)
+            <>
+              <div className="mb-12">
+                <h2 className="text-3xl font-bold text-slate-900">Popular Vouchers</h2>
+                <p className="mt-2 text-slate-600">Choose from top brands and get instant codes</p>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {vouchers.map((voucher) => (
+                  <VoucherCard key={voucher.id} voucher={voucher} />
+                ))}
+              </div>
+            </>
           )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-slate-900 px-4 py-16 sm:px-6 lg:px-8 text-center">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-3xl font-bold text-white">Need Help?</h2>
+          <p className="mt-3 text-slate-300">Add vouchers to cart, checkout, and get instant delivery</p>
         </div>
       </section>
     </div>
