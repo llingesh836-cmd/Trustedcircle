@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-900">
+      <body className="min-h-screen bg-gradient-to-b from-orange-50 via-orange-100 to-white text-slate-900">
         <CartProvider>
           <Navbar />
           <main>{children}</main>

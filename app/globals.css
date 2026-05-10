@@ -13,7 +13,13 @@ html {
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #f8fafc;
+  background:
+    radial-gradient(circle at top left, rgba(251, 146, 60, 0.28), transparent 18%),
+    radial-gradient(circle at top right, rgba(251, 191, 36, 0.22), transparent 16%),
+    radial-gradient(circle at bottom left, rgba(249, 115, 22, 0.14), transparent 18%),
+    radial-gradient(circle at bottom right, rgba(251, 146, 60, 0.10), transparent 14%),
+    linear-gradient(180deg, #fff7ed 0%, #ffedd5 45%, #fef3c7 100%);
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Ccircle cx='14' cy='14' r='10' fill='%23f97316' stroke='%23fbbf24' stroke-width='4' /%3E%3C/svg%3E") 14 14, auto;
 }
 
 * {
@@ -28,9 +34,9 @@ textarea {
 }
 
 ::selection {
-  background: rgba(79, 70, 229, 0.2);
+  background: rgba(249, 115, 22, 0.2);
 }
 
 .bg-page {
-  background-image: radial-gradient(circle at top left, rgba(99, 102, 241, 0.08), transparent 25%), radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.06), transparent 20%);
+  background-image: radial-gradient(circle at top left, rgba(251, 146, 60, 0.08), transparent 25%), radial-gradient(circle at bottom right, rgba(251, 191, 36, 0.06), transparent 20%);
 }
