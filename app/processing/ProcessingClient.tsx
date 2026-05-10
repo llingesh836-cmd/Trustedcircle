@@ -3,6 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+declare global {
+  interface Window {
+    Razorpay?: any;
+  }
+}
+
 type Order = {
   id: string;
   voucherName: string;
@@ -28,11 +34,23 @@ export default function ProcessingClient() {
       setLoading(false);
       return;
     }
+
     fetch(`/api/orders/${orderId}`)
       .then((res) => res.json())
       .then((data) => setOrder(data.order ?? null))
       .finally(() => setLoading(false));
   }, [orderId]);
+
+  useEffect(() => {
+    const scriptId = 'razorpay-checkout-script';
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -47,30 +65,90 @@ export default function ProcessingClient() {
   }, [processing]);
 
   const handlePay = async () => {
-    if (!orderId) {
+    if (!orderId || !order) {
       setMessage('Missing order information.');
       return;
     }
+
     setMessage(null);
     setProcessing(true);
 
-    const response = await fetch('/api/payment/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderId }),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      setMessage(data.error ?? 'Payment failed.');
+    if (!window.Razorpay) {
+      setMessage('Payment gateway failed to load. Please refresh and try again.');
       setProcessing(false);
       return;
     }
 
-    setOrder(data.order);
-    setStatusStep(1);
-    setTimeout(() => setStatusStep(2), 1500);
-    setTimeout(() => setStatusStep(3), 3200);
-    setTimeout(() => setStatusStep(4), 5200);
+    const amountInPaise = order.amount * order.quantity * 100;
+    const createResponse = await fetch('/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: amountInPaise,
+        currency: 'INR',
+        receipt: `receipt_${order.id}`,
+      }),
+    });
+
+    const createData = await createResponse.json();
+    if (!createResponse.ok) {
+      setMessage(createData.error ?? 'Unable to create payment order.');
+      setProcessing(false);
+      return;
+    }
+
+    const razorpayOrderId = createData.order_id;
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? '',
+      amount: amountInPaise,
+      currency: 'INR',
+      name: order.voucherName,
+      description: 'Trustedcircle voucher purchase',
+      order_id: razorpayOrderId,
+      handler: async (paymentResult: any) => {
+        setMessage(null);
+
+        const verifyResponse = await fetch('/api/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId,
+            razorpay_payment_id: paymentResult.razorpay_payment_id,
+            razorpay_order_id: paymentResult.razorpay_order_id,
+            razorpay_signature: paymentResult.razorpay_signature,
+          }),
+        });
+
+        const verifyData = await verifyResponse.json();
+        if (!verifyResponse.ok) {
+          setMessage(verifyData.error ?? 'Payment verification failed.');
+          setProcessing(false);
+          return;
+        }
+
+        setOrder(verifyData.order);
+        setStatusStep(1);
+        setTimeout(() => setStatusStep(2), 1500);
+        setTimeout(() => setStatusStep(3), 3200);
+        setTimeout(() => setStatusStep(4), 5200);
+        setMessage('Payment verified successfully.');
+        setProcessing(false);
+      },
+      modal: {
+        ondismiss: () => {
+          setMessage('Payment was cancelled.');
+          setProcessing(false);
+        },
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', (failureResponse: any) => {
+      setMessage(failureResponse?.error?.description || 'Payment failed. Please try again.');
+      setProcessing(false);
+    });
+
+    rzp.open();
   };
 
   const formats = (seconds: number) => {
@@ -107,8 +185,8 @@ export default function ProcessingClient() {
               </div>
 
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Payment simulator</p>
-                <p className="mt-3 text-slate-600">This demo simulates Razorpay integration for a fast checkout flow.</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Payment</p>
+                <p className="mt-3 text-slate-600">Pay securely using Razorpay checkout.</p>
                 <button
                   type="button"
                   disabled={processing || order.status === 'completed'}
