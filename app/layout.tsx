@@ -1,11 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import Navbar from '../components/Navbar';
 import { CartProvider } from '@/context/CartContext';
 
 export const metadata: Metadata = {
-  title: 'Trusted Circle',
-  description: 'Discounted branded gift vouchers with payment and order flow.',
+  title: 'Trusted Circle - Premium Gift Cards Marketplace',
+  description: 'Shop discounted gift cards from 1000+ trusted brands. Instant delivery, secure payments, and exclusive rewards.',
   icons: {
     icon: '/assets/brand/logo.png',
   },
@@ -14,9 +13,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gradient-to-b from-orange-50 via-orange-100 to-white text-slate-900">
+      <body className="min-h-screen bg-white text-slate-900">
         <CartProvider>
-          <Navbar />
           <main>{children}</main>
         </CartProvider>
       </body>
