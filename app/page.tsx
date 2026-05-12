@@ -1,8 +1,8 @@
-'use client';
-
 import ModernHeader from '@/components/ModernHeader';
 import CategoryNav from '@/components/CategoryNav';
 import HeroSlider from '@/components/HeroSlider';
+import ActivationProcess from '@/components/ActivationProcess';
+import VouchersSection from '@/components/VouchersSection';
 import FeaturedBrands from '@/components/FeaturedBrands';
 import TrendingDeals from '@/components/TrendingDeals';
 import RewardsSection from '@/components/RewardsSection';
@@ -20,12 +20,10 @@ export default function HomePage() {
       {/* Category Navigation */}
       <CategoryNav />
 
-      {/* Main Content */}
       <main>
-        {/* Hero Slider */}
         <HeroSlider />
-
-        {/* Featured Brands */}
+        <ActivationProcess />
+        <VouchersSection />
         <FeaturedBrands />
 
         {/* Trending Deals */}

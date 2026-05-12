@@ -7,12 +7,13 @@ import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'luc
 
 const footerSections = [
   {
-    title: 'Company',
+    title: 'Quick Links',
     links: [
-      { label: 'About Us', href: '#' },
-      { label: 'Blog', href: '#' },
-      { label: 'Careers', href: '#' },
-      { label: 'Press', href: '#' },
+      { label: 'Home', href: '/' },
+      { label: 'Vouchers', href: '/' },
+      { label: 'Card Management', href: '/card-management' },
+      { label: 'Order Flow', href: '/order-flow' },
+      { label: 'Payment Flow', href: '/payment-flow' },
     ],
   },
   {

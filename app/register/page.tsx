@@ -63,7 +63,7 @@ export default function RegisterPage() {
 
     if (response.ok) {
       localStorage.setItem('trustedcircle-user', JSON.stringify({ name, email, phone }));
-      router.push('/profile');
+      router.push('/');
     } else {
       setMessage(data.error ?? 'OTP verification failed.');
     }
